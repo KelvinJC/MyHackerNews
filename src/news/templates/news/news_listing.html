@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include 'news/search_form.html' %}
+
+{% for article in news_page %}
+{# Each "article" is a NewsArticle model object. #}
+    <div class="card">
+        <div class="card-header">
+            <b>{{ article.title }}</b>
+        </div>
+        <div class="card-body">
+        <p class="card-title"></p>
+        <p class="card-text">    
+            <span><i>{{ article.time_utc }}   -   added by @{{ article.author }}</i></span>
+        </p>
+        {% if article.url  %}
+            <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Read more</a>
+        {% endif %}
+        
+        </div>
+    </div>
+    <br>
+{% endfor %}
+
+{% if news_page.has_other_pages %}
+<nav aria-label="...">
+    <ul class="pagination">
+
+        {% if news_page.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ news_page.previous_page_number }}" aria-label="{{ news_page.previous_page_number }}">&#10094;Previous</a>
+      </li>
+        {% endif %}
+        {% for page in custom_range %}
+        {% if page == news_page.number %}
+        <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+          {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ page }}">{{page }}</a></li>
+          {% endif %}  
+        {% endfor %}      
+        {% if news_page.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ news_page.next_page_number }}">Next &#10095;</a></li>
+        {% endif %}
+    </ul>
+  </nav>
+{% endif %}
+
+{% endblock %}
+
+
+

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form id="searchForm" class="d-flex" method=GET action="{% url 'search-jobs' %}">
+    <!--{% csrf_token %} -->
+    <input class="form-control me-2" type="search" placeholder="Search Jobs" aria-label="Search" name="q" value="{{ q }}">
+    <button class="btn btn-outline-success" type="submit">Search</button>
+  </form>
+  <br>
+{% for article in jobs_page %}
+{# Each "article" is a JobArticle model object. #}
+    <div class="card">
+        <div class="card-header">
+            <b>{{ article.title }}</b>
+        </div>
+        <div class="card-body">
+          <p class="card-title"></p>
+          <p class="card-text">    
+            <i>{{ article.time_utc }}<br>   added by @{{ article.author }}</i>
+          </p>
+              {% if article.url  %}
+                  <a href="{{ article.url }}" target="_blank" class="btn btn-outline-secondary btn-sm">Read more</a>
+              {% endif %}
+        </div>
+    </div>    
+    <br>
+{% endfor %}
+
+{% if jobs_page.has_other_pages %}
+  
+  <nav aria-label="...">
+    <ul class="pagination">
+        {% if jobs_page.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ jobs_page.previous_page_number }}" aria-label="{{ jobs_page.previous_page_number }}">&#10094;Previous</a>
+      </li>
+        {% endif %}
+        {% for page in custom_range %}
+            {% if page == jobs_page.number %}
+                <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+            {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ page }}">{{page }}</a></li>
+            {% endif %}  
+        {% endfor %}      
+        {% if jobs_page.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ jobs_page.next_page_number }}">Next &#10095;</a></li>
+        {% endif %}
+    </ul>
+  </nav>
+
+{% endif %}
+
+{% endblock %}

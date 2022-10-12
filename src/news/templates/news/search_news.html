@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% include 'news/search_form.html' %}
+
+{% if q %}
+<h4><i>{{ count }} results for your search term "{{ q }}"</i></h4><br>
+{% for article in news_page %}
+{# Each "article" is a NewsArticle model object. #}
+    <div class="card">
+        <div class="card-header">
+            <b>{{ article.title }}</b>
+        </div>
+        <div class="card-body">
+        <p class="card-title"></p>
+        <p class="card-text">    
+            <i>{{ article.time_utc }}<br>   added by @{{ article.author }}</i>
+        </p>
+        {% if article.url  %}
+            <a href="{{ article.url }}" target="_blank" class="btn btn-outline-secondary btn-sm">Read more</a>
+        {% endif %}
+        
+        </div>
+    </div>
+    <br>
+{% endfor %}
+<br>
+
+{% if news_page.has_other_pages %}
+<nav aria-label="...">
+    <ul class="pagination">
+
+        {% if news_page.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ news_page.previous_page_number }}&q={{ q|urlencode }}" aria-label="{{ news_page.previous_page_number }}" data-page="{{ news_page.previous_page_number }}">&#10094;Previous</a>
+      </li>
+        {% endif %}
+        {% for page in custom_range %}
+        {% if page == news_page.number %}
+        <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ page }}&q={{ q|urlencode }}" data-page="{{ page }}">{{ page }}</a></li>
+          {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ page }}&q={{ q|urlencode }}" data-page="{{ page }}">{{ page }}</a></li>
+          {% endif %}  
+        {% endfor %}      
+        {% if news_page.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ news_page.next_page_number }}&q={{ q|urlencode }}" data-page="{{ news_page.next_page_number }}">Next &#10095;</a></li>
+        {% endif %}
+    </ul>
+  </nav>
+{% endif %}
+
+
+{% else %}
+    <h1>Hey.. you forgot to enter a search term</h1>
+{% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{%extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+{% if form.errors %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <strong>Ahoy sailor!</strong> There was an error with your form..
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+<br>
+{% endif %}
+<h1>Add news story..</h1>
+
+<form action="" method=POST>
+    {% csrf_token %}
+    
+    {{ form.as_p}}
+    
+    <input type="submit" value="Submit" class="btn-btn-secondary">
+</form>
+{% else %}
+<p>
+    <strong>Sorry! You must be logged in to add an article on MyHackerNews</strong><br><br>
+    Log in <a href="{% url 'login' %}">here</a> or <a href="{% url 'signup' %}">Sign up</a>
+    </p>
+    <br>
+    <br>
+    
+{% endif %}
+{% endblock%}
