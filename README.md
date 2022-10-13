@@ -103,8 +103,14 @@ python manage.py runserver
 By default, Django apps listen on http://127.0.0.1:8000 so once the server is running, that is the link to copy and paste into your preferred browser
 
 
+### Screenshots
+![](zreadme_imgs/home.png)
 
 
+![](zreadme_imgs/news.png)
+
+
+![](zreadme_imgs/jobs.png)
 
 
 ## Tips
