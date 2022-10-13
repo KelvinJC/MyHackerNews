@@ -62,8 +62,7 @@ pip install requests
 
 ### Database Creation
 
-The dev branch of this project makes use of Postgres database for storage of articles and job posts as well as user information. If you require a different database, customisation is possible via the settings.py file. <br><br> . To learn how to transfer transfer data from sqlite to postgres, click on this ![link.](https://github.com/KelvinJC/MyHackerNews/blob/dev/how_to.md)
-
+The dev branch of this project makes use of Postgres database for storage of articles and job posts as well as user information. If you require a different database, customisation is possible via the settings.py file. <br><br>  
 
 Change into the source code directory
 
@@ -78,6 +77,8 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
+NB.<br>
+To learn how to transfer transfer data from sqlite to postgres, click on this [link.](how_to.md)
 
 ### Create a Django Admin User
 This step is not critical to the usage of the app but if you are familiar with the Django Admin UI you can create a superuser i.e Admin
