@@ -2,7 +2,7 @@
 
 ## News Aggregation Web Application
 
-MyHackerNews is a simple application that allows users to get up to date on tech-related news articles and tech job posts. Registered users can contibute by adding links to their blogs and online articles.. 
+MyHackerNews is a simple application that allows users to get up to date on tech-related news articles and tech job posts. Registered users can contibute by adding links to their blogs and online articles.
 
 
 Within the project, the three apps worthy of note are:
