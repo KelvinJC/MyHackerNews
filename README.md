@@ -62,7 +62,7 @@ pip install requests
 
 ### Database Creation
 
-The dev branch of this project makes use of Postgres database for storage of articles and job posts as well as user information. If you require a different database, customisation is possible via the settings.py file. <br><br>
+The dev branch of this project makes use of Postgres database for storage of articles and job posts as well as user information. If you require a different database, customisation is possible via the settings.py file. <br><br> . To learn how to transfer transfer data from sqlite to postgres, click on this link.
 
 
 Change into the source code directory
