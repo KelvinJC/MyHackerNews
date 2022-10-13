@@ -17,14 +17,31 @@ Within the project, the three apps worthy of note are:
 
 
 ## Getting Started
-* Create a new directory
+* Create a new directory where you would like this project stored. e.g NewsApp
 
-* Change into that directory
+* Change into that new directory
 
-The next two steps apply to users on a Windows OS. <br>
-Check out how to create and activate a virtual environment if you are on a different OS.
+```
+cd NewsApp
+```
 
-* Create a virtual environment. 
+* Get a copy of the source code of this project into your local repository.
+
+```
+git clone https://github.com/KelvinJC/MyHackerNews.git
+```
+
+* The code will be packaged in a directory named MyHackerNews so change into that directory
+
+```
+cd MyHackerNews
+```
+
+<br><br>
+* *In accordance with best practices, run this project within a virtual environment.*<br>
+<br><br>
+
+* Create a virtual environment. (Windows OS. Check out how to create and activate a virtual environment if you are on a different OS.)
 
 ```
 python -m venv <name_of_environment> 
@@ -42,6 +59,7 @@ source venv/Scripts/activate
 pip install django
 pip install requests
 ```
+
 
 ### Database Creation
 
