@@ -117,5 +117,6 @@ By default, all Django applications listen on http://127.0.0.1:8000 so once the 
 
 
 ## User Tips
-1. Sign in to be able to create news and job stories.
-2. To search for news and job articles by poster, link or article title, use the search bar in the navbar area or on the respective pages.
+1. Click on the refresh dropdown and then refresh news stories or refresh job stories to update your feed.
+2. Sign in to be able to create news and job stories.
+3. To search for news and job articles by poster, link or article title, use the search bar in the navbar area or on the respective pages.
