@@ -62,8 +62,7 @@ pip install requests
 
 ### Database Creation
 
-This project makes use of a sqlite database for storage of articles and job posts as well as user information. If you require a different database, customisation is possible via the settings.py file. <br>
-For the sake of simplicity however, we will focus on using sqlite3. <br><br>
+The dev branch of this project makes use of Postgres database for storage of articles and job posts as well as user information. If you require a different database, customisation is possible via the settings.py file. <br><br>
 
 
 Change into the source code directory
