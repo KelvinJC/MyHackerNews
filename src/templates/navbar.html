@@ -30,11 +30,11 @@
           </ul>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Refresh
+              More stories
             </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'api-news' %}">Refresh News Stories</a></li>
-            <li><a class="dropdown-item" href="{% url 'api-jobs' %}">Refresh Job Stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'api-news' %}">Load more news stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'api-jobs' %}">Load more job stories</a></li>
           </ul>
           {% if user.is_authenticated %}
           <li class="nav-item">
