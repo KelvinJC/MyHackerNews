@@ -99,10 +99,11 @@ To begin using the application. Initiate the server by running the following com
 python manage.py runserver 
 ```
 
-By default, all Django applications listen on http://127.0.0.1:8000 so once the server is running, copy and paste the link into your preferred browser
+By default, all Django applications listen on http://127.0.0.1:8000 so once the server is running, copy and paste the link into your preferred browser.
 
 
-### Screenshots
+
+## Screenshots
 * Home page
 ![](zreadme_imgs/home.png)
 <br><br>
