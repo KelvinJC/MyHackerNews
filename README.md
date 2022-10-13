@@ -105,9 +105,11 @@ By default, Django apps listen on http://127.0.0.1:8000 so once the server is ru
 
 ### Screenshots
 ![](zreadme_imgs/home.png)
+<br><br>
 
 
 ![](zreadme_imgs/news.png)
+<br><br>
 
 
 ![](zreadme_imgs/jobs.png)
