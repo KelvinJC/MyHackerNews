@@ -12,8 +12,13 @@
         </div>
         <div class="card-body">
         <p class="card-title"></p>
-        <p class="card-text">    
-            <span><i>{{ article.time_utc }}   -   added by @{{ article.author }}</i></span>
+        <p class="card-text">  
+          {% if article.author %}  
+          <span><i>post by @{{ article.author }}</i></span>
+          {% else %}
+          <span><i>post by @{{ article.post_by }}</i></span>
+          {% endif %}
+          <i style="float:right;">added {{ article.time_added|timesince }} ago</i>
         </p>
         {% if article.url  %}
             <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Read more</a>

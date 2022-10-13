@@ -8,12 +8,17 @@
 {# Each "article" is a JobArticle model object. #}
     <div class="card">
         <div class="card-header">
-            <span><strong>{{ article.author }}</strong>    - added on {{ article.time_utc }}</span>
+            <span><strong>{{ article.title }}</strong></span>
         </div>
         <div class="card-body">
         <h5 class="card-title"></h5>
         <p class="card-text">    
-            {{ article.title }} 
+            {% if article.author %}  
+            <span><i>post by @{{ article.author }}</i></span>
+            {% else %}
+            <span><i>post by @{{ article.post_by }}</i></span>
+            {% endif %}
+            <i style="float:right;">added {{ article.time_added|timesince }} ago</i>
         </p>
         {% if article.url  %}
             <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Read more</a>
