@@ -103,14 +103,15 @@ By default, all Django applications listen on http://127.0.0.1:8000 so once the 
 
 
 ### Screenshots
+* Home page
 ![](zreadme_imgs/home.png)
 <br><br>
 
-
+* News stories
 ![](zreadme_imgs/news.png)
 <br><br>
 
-
+* Jobs stories
 ![](zreadme_imgs/jobs.png)
 
 
