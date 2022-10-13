@@ -61,11 +61,14 @@ def news_api_request_view(request):
             )
             except django.db.utils.IntegrityError:
                 print( 'news story ', stories.index(i), ' is already in the database')
-    
+    else:
+        messages.error(request, ("There are no new articles right now. Check again later"))
+        
     end_db = time.time()
     print('db run took: ', end_db - end_keyfinder, ' seconds')
 
-    return render(request, "news/news_create.html", {}) # need a better return statement. Tests use http status code
+    #return render(request, "news/news_create.html", {}) # need a better return statement. Tests use http status code
+    return redirect('list-news')
 
 def search_news_view(request):
     q = request.GET.get('q')
@@ -76,7 +79,7 @@ def search_news_view(request):
             Q(url__icontains=q) |
             Q(author__username__icontains=q)
             ).order_by('-time_added')
-            
+
         paginator = Paginator(news_query, 5)
         page_number = request.GET.get('page', 1)
         news_page = paginator.get_page(page_number)

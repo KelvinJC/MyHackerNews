@@ -25,12 +25,12 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     
     path('jobs_list/', jobs_list_view, name='list-jobs'),
-    path("jobs_api_request/", jobs_api_request_view),
+    path("jobs_api_request/", jobs_api_request_view, name='api-jobs'),
     path("search_jobs/", search_jobs_view, name='search-jobs'),
     path("add_job/", add_job_view, name='add-job'),
 
     path("news_list/", news_list_view, name='list-news'),
-    path("news_api_request/", news_api_request_view),
+    path("news_api_request/", news_api_request_view, name='api-news'),
     path("search_news/", search_news_view, name='search-news'),
     path("add_news/", add_news_view, name='add-news'),
     path("admin/", admin.site.urls),

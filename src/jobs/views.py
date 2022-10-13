@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
@@ -55,11 +55,14 @@ def jobs_api_request_view(request):
             )
             except django.db.utils.IntegrityError:
                 print( 'news story ', job_stories.index(i), ' is already in the database')
-    
+    else:
+        messages.error(request, ("There are no new articles right now. Check again later"))
+     
     end_db = time.time()
     print('db run took: ', end_db - end_keyfinder, ' seconds')
 
-    return(request, "job/jobs_create.html", {})
+    #return(request, "job/jobs_create.html", {})
+    return redirect('list-jobs')
 
 
 def add_job_view(request):

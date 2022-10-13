@@ -28,6 +28,14 @@
             <li><hr class="dropdown-divider"></li>
             {%  endif %}
           </ul>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Refresh
+            </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{% url 'api-news' %}">Refresh News Stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'api-jobs' %}">Refresh Job Stories</a></li>
+          </ul>
           {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Log out</a>
