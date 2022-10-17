@@ -1,5 +1,5 @@
 import requests
-import ast
+import json
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
 
@@ -18,10 +18,8 @@ class HackerAPINewsRequest(APIRequest):
         payload = "{}"
         response = requests.request("GET", self.id_url, data=payload) # should be wrapped in try catch block against network errors
         
-        res_text = response.text
-        # reponse.text appears to be a list of integers cast in a string
-        all_ids = (res_text).strip('[').strip(']').split(',')
-        all_ids_int = [int(i) for i in all_ids]
+        res_text = json.loads(response.text)
+        all_ids_int = [int(i) for i in res_text]
         return all_ids_int
 
     def find_new_ids(self):
@@ -44,36 +42,41 @@ class HackerAPINewsRequest(APIRequest):
         ''' Uses the obtained ids to fetch each story from the Get item endpoint.
             Uses multi-threading to make concurrent HTTP requests to external api'''
         def get_url(url):
-            return requests.get(url).text
+            return json.loads(requests.get(url).text)
 
         if ids:
             list_of_urls = [self.each_story_url.format(i) for i in ids]
             
             with ThreadPoolExecutor(max_workers=50) as pool:
                 a = list(pool.map(get_url, list_of_urls))  
-
             return a
-       
         print('no new stories from fetch fxn')
         return None
 
 class KeyFinder():
     def __init__(self, request: APIRequest): 
         self.request = request
+    
+    def remove_non_news(self):
+        news = self.request.fetch_story_with_id(self.request.find_new_ids())
+        if news:
+            only_news = [i for i in news if i.get('type') == 'story']
+            return only_news
+        else:
+            return None
 
     def get_stories_with_select_keys(self, keys):
-        new_stories = self.request.fetch_story_with_id(self.request.find_new_ids()) 
+        new_stories = self.remove_non_news()
         if new_stories:
             b = []
             for i in new_stories:
-                i = ast.literal_eval(i)
                 choice_dict = {k: v for k, v in i.items() if k in keys }
                 b.append(choice_dict)   
             return b
         else:
             print('No new stories')
             return None
-
+    
 request = HackerAPINewsRequest()
 keyfinder = KeyFinder(request)
 

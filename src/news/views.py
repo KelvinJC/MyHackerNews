@@ -5,7 +5,6 @@ from django.contrib import messages
 import django.db
 import time
 
-from django.utils import timezone
 
 from .models import NewsArticle
 from .forms import NewsCreateForm
@@ -14,14 +13,13 @@ from .utils import keyfinder, get_page_indices
 
 # Create your views here.
 def home_view(request, *args, **kwargs):
-    
     return render(request, "home.html", {})
 
 def news_list_view(request):
     ''' Display the news articles by page beginning from the latest.'''
 
     news_query = NewsArticle.objects.all().order_by('-api_time') # The '-' in front of time makes it descending order
-    paginator = Paginator(news_query, 5) # Show 10 news articles per page.
+    paginator = Paginator(news_query, 5) # Show 5 news articles per page.
 
     page_number = request.GET.get('page')
     news_page = paginator.get_page(page_number)

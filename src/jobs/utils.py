@@ -1,5 +1,5 @@
 import requests
-import ast
+import json
 from concurrent.futures import ThreadPoolExecutor
 from abc import ABC, abstractmethod
 
@@ -18,10 +18,8 @@ class HackerAPIJobsRequest(APIRequest):
         payload = "{}"
         response = requests.request("GET", self.id_url, data=payload) # should be wrapped in try catch block against network errors
 
-        res_text = response.text
-        # reponse.text appears to be a list of integers cast in a string
-        all_ids = (res_text).strip('[').strip(']').split(',')
-        all_ids_int = [int(i) for i in all_ids]
+        res_text = json.loads(response.text)
+        all_ids_int = [int(i) for i in res_text]
         return all_ids_int
 
     def find_new_ids(self):
@@ -47,7 +45,7 @@ class HackerAPIJobsRequest(APIRequest):
     def fetch_job_posts_with_id(self, ids):
         ''' uses multi-threading to make concurrent HTTP requests to external api'''
         def get_url(url):
-            return requests.get(url).text
+            return json.loads(requests.get(url).text)
 
         if ids:
             list_of_urls = [self.each_job_story_url.format(i) for i in ids]
@@ -64,12 +62,19 @@ class KeyFinder():
     def __init__(self, request: APIRequest): 
         self.request = request
 
+    def remove_non_jobs(self):
+        jobs = self.request.fetch_job_posts_with_id(self.request.find_new_ids())
+        if jobs:
+            only_jobs = [i for i in jobs if i.get('type') == 'job']
+            return only_jobs
+        else:
+            return None
+
     def get_job_posts_with_select_keys(self, keys):
-        new_job_stories = self.request.fetch_job_posts_with_id(self.request.find_new_ids()) 
+        new_job_stories = self.remove_non_jobs() 
         if new_job_stories:
             b = []
             for i in new_job_stories:
-                i = ast.literal_eval(i)
                 choice_dict = {k: v for k, v in i.items() if k in keys }
                 b.append(choice_dict)   
             return b

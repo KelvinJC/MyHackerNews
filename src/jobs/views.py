@@ -48,10 +48,11 @@ def jobs_api_request_view(request):
                 JobArticle.objects.create(
                 api_id     = i.get('id'),
                 api_time   = i.get('time'),
-                author     = i.get('by'),
+                post_by    = i.get('by'),
                 type       = i.get('type'),
                 title      = i.get('title'),
-                url        = i.get('url')
+                url        = i.get('url'),
+                author     = None,
             )
             except django.db.utils.IntegrityError:
                 print( 'news story ', job_stories.index(i), ' is already in the database')
@@ -71,14 +72,26 @@ def add_job_view(request):
     if request.method == "POST":
         form = JobsCreateForm(request.POST or None) 
         if form.is_valid():
-            form.save()
-            form = JobsCreateForm()
+            job = form.save(commit=False)
 
+            # integer hack to stand in for api id
+            # convert username to a string of integers, concatenate with current unix time
+            # alternative: separate job article table/model for job articles added by users and not the api
+            integer = int(time.time()) # int(''.join(map(str, map(ord, request.user.username))))  + str(int(time.time())))
+            
+            job.api_id = integer
+            
+            print(job.api_id)
+            job.author = request.user
+            job.api_time = int(time.time()) # adding Unix time of when post is added
+            job.save()
+            form = JobsCreateForm()
             messages.success(request, ("Job post was added sucessfully."))
             return render(request, "jobs/add_job.html", {'form': form})
     else:
         form = JobsCreateForm
         return render(request, "jobs/add_job.html", {'form': form})
+
 
 def search_jobs_view(request):
     q = request.GET.get('q')
