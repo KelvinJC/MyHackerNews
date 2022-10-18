@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'jobs',
     'pages',
     'accounts',
+    'cached_articles',
 ]
 
 MIDDLEWARE = [

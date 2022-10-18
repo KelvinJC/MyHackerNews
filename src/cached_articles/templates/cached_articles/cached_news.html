@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if user.is_authenticated %}
+
+
+{% include 'news/search_form.html' %}
+
+{% if cached %}
+        {% for cached_news in cached %}
+        {# Each "cached_news" is a CachedNewsArticle model object. #}
+            <div class="card">
+                <div class="card-header">
+                    <b>{{ cached_news.article.title }}</b>
+                </div>
+                <div class="card-body">
+                <p class="card-title"></p>
+                <p class="card-text">  
+                  {% if cached_news.article.author %}  
+                  <span><i>post by @{{ cached_news.article.author }}</i></span>
+                  {% else %}
+                  <span><i>post by @{{ cached_news.article.post_by }}</i></span>
+                  {% endif %}
+                  <i style="float:right;">added {{ cached_news.article.time_added|timesince }} ago</i>
+                </p>
+                {% if cached_news.article.url  %}
+                    <a href="{{ cached_news.article.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Read more</a>
+                {% endif %}
+
+                
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+
+
+            {% if cached.has_other_pages %}
+            <nav aria-label="...">
+                <ul class="pagination">
+
+                    {% if cached.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ cached.previous_page_number }}" aria-label="{{ cached.previous_page_number }}">&#10094;Previous</a>
+                  </li>
+                    {% endif %}
+                    {% for page in custom_range %}
+                    {% if page == cached.number %}
+                    <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                      {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page }}">{{page }}</a></li>
+                      {% endif %}  
+                    {% endfor %}      
+                    {% if cached.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{ cached.next_page_number }}">Next &#10095;</a></li>
+                    {% endif %}
+                </ul>
+              </nav>
+            {% endif %}
+
+
+        {% else %}
+        <h2><i>You have no items in your stash.</i></h2>
+        {% endif %}
+
+{% else %}
+<p>
+  <strong>Sorry! You must be logged in to MyHackerNews to cache articles </strong><br><br>
+  Log in <a href="{% url 'login' %}">here</a> or <a href="{% url 'signup' %}">Sign up</a>
+</p>
+<br>
+<br>
+{% endif %}
+{% endblock %}
+
+
+

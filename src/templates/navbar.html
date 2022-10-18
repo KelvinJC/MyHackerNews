@@ -11,8 +11,8 @@
               News
             </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'list-news' %}">Show All News Stories</a></li>
-            <li><a class="dropdown-item" href="{% url 'api-news' %}">Load More News Stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'list-news' %}">All news stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'api-news' %}">Load more news stories</a></li>
             {% if user.is_authenticated %}
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="{% url 'add-news' %}">Add News</a></li>
@@ -23,20 +23,20 @@
               Jobs
             </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'list-jobs' %}">Show All Job Stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'list-jobs' %}">All job stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'api-jobs' %}">Load more job stories</a></li>
             {% if user.is_authenticated %}
             <li><a class="dropdown-item" href="{% url 'add-job' %}">Add Job</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'api-jobs' %}">Load more job stories</a></li>
             {%  endif %}
           </ul>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              More 
+              Cache 
             </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'api-news' %}">Load more news stories</a></li>
-            <li><a class="dropdown-item" href="{% url 'api-jobs' %}">Load more job stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'list-cached-news' %}">My news stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'list-cached-jobs' %}">My job stories</a></li>
           </ul>
           {% if user.is_authenticated %}
           <li class="nav-item">

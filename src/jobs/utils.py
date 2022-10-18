@@ -17,7 +17,6 @@ class HackerAPIJobsRequest(APIRequest):
     def fetch_all_job_post_ids(self):
         payload = "{}"
         response = requests.request("GET", self.id_url, data=payload) # should be wrapped in try catch block against network errors
-
         res_text = json.loads(response.text)
         all_ids_int = [int(i) for i in res_text]
         return all_ids_int
@@ -62,7 +61,7 @@ class KeyFinder():
     def __init__(self, request: APIRequest): 
         self.request = request
 
-    def remove_non_jobs(self):
+    def remove_non_job_stories(self):
         jobs = self.request.fetch_job_posts_with_id(self.request.find_new_ids())
         if jobs:
             only_jobs = [i for i in jobs if i.get('type') == 'job']
@@ -71,7 +70,7 @@ class KeyFinder():
             return None
 
     def get_job_posts_with_select_keys(self, keys):
-        new_job_stories = self.remove_non_jobs() 
+        new_job_stories = self.remove_non_job_stories() 
         if new_job_stories:
             b = []
             for i in new_job_stories:

@@ -23,6 +23,11 @@
         {% if article.url  %}
             <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Read more</a>
         {% endif %}
+        <form class="d-flex" action="{% url 'cache-news' %}" method=POST>
+          {% csrf_token %}
+          <input type="hidden" name="cached_news" value="{{ article.id }}"/>
+          <button class="btn btn-outline-success btn-sm" type="submit">Cache News</button>
+        </form>
         
         </div>
     </div>
