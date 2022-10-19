@@ -41,11 +41,12 @@ class HackerAPIJobsRequest(APIRequest):
         return None
 
     # Use the obtained ids to fetch each job from the Get item endpoint 
-    def fetch_job_posts_with_id(self, ids):
+    def fetch_job_posts_with_id(self):
         ''' uses multi-threading to make concurrent HTTP requests to external api'''
         def get_url(url):
             return json.loads(requests.get(url).text)
-
+        
+        ids = self.find_new_ids()
         if ids:
             list_of_urls = [self.each_job_story_url.format(i) for i in ids]
             
@@ -57,32 +58,54 @@ class HackerAPIJobsRequest(APIRequest):
         print('no new job stories from fetch fxn')
         return None
 
-class KeyFinder():
+
+class TypeIsJobChecker:
     def __init__(self, request: APIRequest): 
         self.request = request
-
-    def remove_non_job_stories(self):
-        jobs = self.request.fetch_job_posts_with_id(self.request.find_new_ids())
-        if jobs:
-            only_jobs = [i for i in jobs if i.get('type') == 'job']
-            return only_jobs
+    
+    def get_only_job_stories(self):
+        ne = self.request.fetch_job_posts_with_id()
+        if ne:
+            only_news = [i for i in ne if i.get('type') == 'job']
+            return only_news
         else:
             return None
 
+
+class PostHasLinkChecker:
+    def __init__(self, checker: TypeIsJobChecker): 
+        self.checker = checker
+
+    def get_job_posts_with_links(self):
+        nw = self.checker.get_only_job_stories()
+        if nw:
+            only_posts_with_links = [i for i in nw if i.get('url') != '' and i.get('url') != None]
+            return only_posts_with_links
+        return None
+
+
+class KeyFinder:
+    def __init__(self, checker: PostHasLinkChecker): 
+        self.checker = checker
+
     def get_job_posts_with_select_keys(self, keys):
-        new_job_stories = self.remove_non_job_stories() 
-        if new_job_stories:
+        ns = self.checker.get_job_posts_with_links()
+        if ns:
             b = []
-            for i in new_job_stories:
+            for i in ns:
                 choice_dict = {k: v for k, v in i.items() if k in keys }
                 b.append(choice_dict)   
             return b
         else:
-            print('No new job stories')
+            print('No new job posts')
             return None
 
-request = HackerAPIJobsRequest()
-keyfinder = KeyFinder(request)
+   
+request      = HackerAPIJobsRequest()
+type_checker = TypeIsJobChecker(request)
+link_checker = PostHasLinkChecker(type_checker)
+keyfinder    = KeyFinder(link_checker)
+
 
 
 
@@ -112,3 +135,9 @@ def get_page_indices(page, paginator):
 
 
 
+if  __name__ == '__main__':
+
+    choice = ["by", "id", "type", "title", "url", "time"]
+    keys = keyfinder.get_job_posts_with_select_keys(choice)
+    
+    print(keys) 

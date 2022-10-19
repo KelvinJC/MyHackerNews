@@ -14,22 +14,25 @@
             <b>{{ article.title }}</b>
         </div>
         <div class="card-body">
-          <p class="card-title"></p>
           <p class="card-text">    
             {% if article.author %}  
             <span><i>post by @{{ article.author }}</i></span>
             {% else %}
             <span><i>post by @{{ article.post_by }}</i></span>
             {% endif %}
-            <i style="float:right;">added {{ article.time_added|timesince }} ago</i>          </p>
+            <i style="float:right;">added {{ article.time_added|timesince }} ago</i>          
+          </p>
+              <br>
+              <div>
               {% if article.url  %}
-                  <a href="{{ article.url }}" target="_blank" class="btn btn-outline-secondary btn-sm">Read more</a>
+                  <a href="{{ article.url }}" target="_blank" class="btn btn-outline-secondary btn-sm" style="float:left; margin-right: 15px;">Read more</a>
               {% endif %}
               <form class="d-flex" action="{% url 'cache-job' %}" method=POST>
                 {% csrf_token %}
                 <input type="hidden" name="cached_job" value="{{ article.id }}"/>
-                <button class="btn btn-outline-success btn-sm" type="submit">Cache Job</button>
+                <button class="btn btn-outline-success btn-sm" type="submit" style="float:left;">Cache News</button>
               </form>
+              </div>
         </div>
     </div>    
     <br>

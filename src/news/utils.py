@@ -24,9 +24,9 @@ class HackerAPINewsRequest(APIRequest):
 
     def find_new_ids(self):
         '''
-        Queries db to get all past ids
-        Compares list of past ids with current request
-        Returns all new ids or None
+        Query db to get all past ids
+        Compare list of past ids with current request
+        Return all new ids or None
         '''
         request_ids = self.fetch_all_story_ids()
         print(request_ids)
@@ -38,38 +38,61 @@ class HackerAPINewsRequest(APIRequest):
             return new_ids
         return None
 
-    def fetch_story_with_id(self, ids):
-        ''' Uses the obtained ids to fetch each story from the Get item endpoint.
-            Uses multi-threading to make concurrent HTTP requests to external api'''
+    def fetch_story_with_id(self):
+        ''' 
+        Use the obtained ids to fetch each story from the Get item endpoint.
+        Use multi-threading to make concurrent HTTP requests to external api
+        '''
+
         def get_url(url):
             return json.loads(requests.get(url).text)
-
+        
+        ids = self.find_new_ids()
         if ids:
             list_of_urls = [self.each_story_url.format(i) for i in ids]
-            
             with ThreadPoolExecutor(max_workers=50) as pool:
                 a = list(pool.map(get_url, list_of_urls))  
             return a
         print('no new stories from fetch fxn')
         return None
 
-class KeyFinder():
+
+class TypeIsStoryChecker:
     def __init__(self, request: APIRequest): 
         self.request = request
     
-    def remove_non_news(self):
-        news = self.request.fetch_story_with_id(self.request.find_new_ids())
-        if news:
-            only_news = [i for i in news if i.get('type') == 'story']
+    def get_only_news_stories(self):
+        ne = self.request.fetch_story_with_id()
+        if ne:
+            only_news = [i for i in ne if i.get('type') == 'story']
             return only_news
         else:
             return None
 
+
+class StoryHasLinkChecker:
+    def __init__(self, checker: TypeIsStoryChecker): 
+        self.checker = checker
+
+    def get_news_with_links(self):
+        nw = self.checker.get_only_news_stories()
+        if nw:
+            only_news_with_links = [i for i in nw if i.get('url') != '' and i.get('url') != None]
+            # news_without_links = [x for x in nw if x not in only_news_with_links] # what to do with news posts without links? Make a just-headlines feature?
+            # print('those without', news_without_links)
+            return only_news_with_links
+        return None
+
+
+class KeyFinder:
+    def __init__(self, checker: StoryHasLinkChecker): 
+        self.checker = checker
+
     def get_stories_with_select_keys(self, keys):
-        new_stories = self.remove_non_news()
-        if new_stories:
+        ns = self.checker.get_news_with_links()
+        if ns:
             b = []
-            for i in new_stories:
+            for i in ns:
                 choice_dict = {k: v for k, v in i.items() if k in keys }
                 b.append(choice_dict)   
             return b
@@ -77,8 +100,11 @@ class KeyFinder():
             print('No new stories')
             return None
     
-request = HackerAPINewsRequest()
-keyfinder = KeyFinder(request)
+request      = HackerAPINewsRequest()
+type_checker = TypeIsStoryChecker(request)
+link_checker = StoryHasLinkChecker(type_checker)
+keyfinder    = KeyFinder(link_checker)
+
 
 
 
@@ -107,7 +133,7 @@ def get_page_indices(page, paginator):
 
 """
  
-<!-- A little Javascript to help in clickingthrough pages in a search --> 
+<!-- A little Javascript to help in clicking through pages in a search --> 
 
 <script type="text/javascript">
     // Get search form and page links
@@ -158,10 +184,12 @@ def get_page_indices(page, paginator):
                 "type":"story",
                 "url":"https://httptoolkit.tech/blog/cache-your-cors/"
             }'
- 
+
 """
 
 if  __name__ == '__main__':
-    r = HackerAPINewsRequest()
-    a = r.get_stories_with_select_keys()  
-    print(a) 
+
+    choice = ["by", "id", "type", "title", "url", "time"]
+    keys = keyfinder.get_stories_with_select_keys(choice)
+    
+    print(keys) 

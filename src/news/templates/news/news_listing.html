@@ -11,7 +11,6 @@
             <b>{{ article.title }}</b>
         </div>
         <div class="card-body">
-        <p class="card-title"></p>
         <p class="card-text">  
           {% if article.author %}  
           <span><i>post by @{{ article.author }}</i></span>
@@ -20,14 +19,17 @@
           {% endif %}
           <i style="float:right;">added {{ article.time_added|timesince }} ago</i>
         </p>
+        <br>
+        <div>
         {% if article.url  %}
-            <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Read more</a>
+            <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-sm" style="float:left; margin-right: 15px;">Read more</a>
         {% endif %}
         <form class="d-flex" action="{% url 'cache-news' %}" method=POST>
           {% csrf_token %}
           <input type="hidden" name="cached_news" value="{{ article.id }}"/>
-          <button class="btn btn-outline-success btn-sm" type="submit">Cache News</button>
+          <button class="btn btn-outline-success btn-sm" type="submit" style="float:left;">Cache News</button>
         </form>
+        </div>
         
         </div>
     </div>
