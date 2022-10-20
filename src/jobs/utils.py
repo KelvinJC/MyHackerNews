@@ -11,21 +11,29 @@ class APIRequest(ABC):
         pass
 
 class HackerAPIJobsRequest(APIRequest):
-    id_url = "https://hacker-news.firebaseio.com/v0/jobstories.json"
-    each_job_story_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
+    __id_url = "https://hacker-news.firebaseio.com/v0/jobstories.json"
+    __each_job_story_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
 
+    def __request(self, url):
+        try:
+            r = requests.request("GET", url, timeout=120) 
+            r_text = json.loads(r.text)
+        except ConnectionError as e:  
+            print(e)
+        return r_text
+ 
     def fetch_all_job_post_ids(self):
-        payload = "{}"
-        response = requests.request("GET", self.id_url, data=payload) # should be wrapped in try catch block against network errors
-        res_text = json.loads(response.text)
-        all_ids_int = [int(i) for i in res_text]
-        return all_ids_int
-
+        ids = self.__request(self.__id_url)
+        if ids:
+            ids_int = [int(i) for i in ids]
+            return ids_int
+        return None
+     
     def find_new_ids(self):
         '''
-        Queries db to get all past ids
-        Compares list of past ids with current request
-        Returns all new ids or None
+        Query db to get all past ids
+        Compare list of past ids with current request
+        Return all new ids or None
         '''
         request_ids = self.fetch_all_job_post_ids()
         print(request_ids)
@@ -40,21 +48,24 @@ class HackerAPIJobsRequest(APIRequest):
             return new_ids
         return None
 
+    def __concurrent_request(self, urls: list):
+        '''
+        Use multi-threading to make concurrent HTTP requests to a list of urls
+        '''     
+        with ThreadPoolExecutor(max_workers=50) as pool:
+            a = list(pool.map(self.__request, urls))  
+        return a
+
     # Use the obtained ids to fetch each job from the Get item endpoint 
     def fetch_job_posts_with_id(self):
-        ''' uses multi-threading to make concurrent HTTP requests to external api'''
-        def get_url(url):
-            return json.loads(requests.get(url).text)
-        
+        ''' 
+        Use the obtained ids to fetch each story from the Get item endpoint.
+        '''
         ids = self.find_new_ids()
         if ids:
-            list_of_urls = [self.each_job_story_url.format(i) for i in ids]
-            
-            with ThreadPoolExecutor(max_workers=50) as pool:
-                a = list(pool.map(get_url, list_of_urls))  
-
-            return a
-       
+            list_of_urls = [self.__each_job_story_url.format(i) for i in ids]
+            response = self.__concurrent_request(list_of_urls)
+            return response
         print('no new job stories from fetch fxn')
         return None
 

@@ -2,6 +2,7 @@ import requests
 import json
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
+from requests.exceptions import ConnectionError
 
 from .models import NewsArticle
 
@@ -11,17 +12,25 @@ class APIRequest(ABC):
         pass
 
 class HackerAPINewsRequest(APIRequest):
-    id_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
-    each_story_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
+    __id_url         = "https://hacker-news.firebaseio.com/v0/topstories.json"
+    __each_story_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
 
-    def fetch_all_story_ids(self):
-        payload = "{}"
-        response = requests.request("GET", self.id_url, data=payload) # should be wrapped in try catch block against network errors
+    
+    def __request(self, url):
+        try:
+            r = requests.request("GET", url, timeout=120) 
+            r_text = json.loads(r.text)
+        except ConnectionError as e:  
+            print(e)
+        return r_text
         
-        res_text = json.loads(response.text)
-        all_ids_int = [int(i) for i in res_text]
-        return all_ids_int
-
+    def fetch_all_story_ids(self):
+        ids = self.__request(self.__id_url)
+        if ids:
+            ids_int = [int(i) for i in ids]
+            return ids_int
+        return None
+        
     def find_new_ids(self):
         '''
         Query db to get all past ids
@@ -38,21 +47,23 @@ class HackerAPINewsRequest(APIRequest):
             return new_ids
         return None
 
+    def __concurrent_request(self, urls: list):
+        '''
+        Use multi-threading to make concurrent HTTP requests to a list of urls
+        '''     
+        with ThreadPoolExecutor(max_workers=50) as pool:
+            a = list(pool.map(self.__request, urls))  
+        return a
+
     def fetch_story_with_id(self):
         ''' 
         Use the obtained ids to fetch each story from the Get item endpoint.
-        Use multi-threading to make concurrent HTTP requests to external api
         '''
-
-        def get_url(url):
-            return json.loads(requests.get(url).text)
-        
         ids = self.find_new_ids()
         if ids:
-            list_of_urls = [self.each_story_url.format(i) for i in ids]
-            with ThreadPoolExecutor(max_workers=50) as pool:
-                a = list(pool.map(get_url, list_of_urls))  
-            return a
+            list_of_urls = [self.__each_story_url.format(i) for i in ids]
+            response = self.__concurrent_request(list_of_urls)
+            return response
         print('no new stories from fetch fxn')
         return None
 
@@ -193,3 +204,5 @@ if  __name__ == '__main__':
     keys = keyfinder.get_stories_with_select_keys(choice)
     
     print(keys) 
+
+
