@@ -19,7 +19,7 @@ def news_list_view(request):
     ''' Display the news articles by page beginning from the latest.'''
 
     news_query = NewsArticle.objects.all().order_by('-api_time') # The '-' in front of time makes it descending order
-    paginator = Paginator(news_query, 5) # Show 5 news articles per page.
+    paginator = Paginator(news_query, 12) # Show 5 news articles per page.
 
     page_number = request.GET.get('page')
     news_page = paginator.get_page(page_number)
@@ -78,7 +78,7 @@ def search_news_view(request):
             Q(author__username__icontains=q)
             ).order_by('-time_added')
 
-        paginator = Paginator(news_query, 5)
+        paginator = Paginator(news_query, 8)
         page_number = request.GET.get('page', 1)
         news_page = paginator.get_page(page_number)
         

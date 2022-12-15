@@ -2,61 +2,75 @@
 
 {% block content %}
 
-{% if q %}
-<h4><i>{{ count }} results for your search term "{{ q }}"</i></h4><br>
-{% for article in jobs_page %}
-{# Each "article" is a JobArticle model object. #}
-    <div class="card">
-        <div class="card-header">
-            <span><strong>{{ article.title }}</strong></span>
-        </div>
-        <div class="card-body">
-        <h5 class="card-title"></h5>
-        <p class="card-text">    
-            {% if article.author %}  
-            <span><i>post by @{{ article.author }}</i></span>
-            {% else %}
-            <span><i>post by @{{ article.post_by }}</i></span>
-            {% endif %}
-            <i style="float:right;">added {{ article.time_added|timesince }} ago</i>
-        </p>
-        {% if article.url  %}
-            <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Read more</a>
-        {% endif %}
-        
-        </div>
+<div class="row justify-content-left">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      {% if q %}
+      <h4><i>{{ count }} results for your search term "{{ q }}"</i></h4><br>
+      {% else %}
+      <h1>Hey.. you forgot to enter a search term</h1>
+      {% endif %}
     </div>
-    <br>
-{% endfor %}
-<br>
+    <div class="col-md-4 ">
+      {% include 'jobs/search_jobs_form.html' %}
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="row">
+        {% if q %}
+        {% for article in jobs_page %}     {# Each "article" is a JobArticle model object. #}
+            <div class="col-md-6 mb-3">
+                <div class="card">
+                  <div class="card-header" style="height: 65px; font-size: 14px">
+                      <span><strong>{{ article.title }}</strong></span>
+                  </div>
+                  <div class="card-body">
+                        <h5 class="card-title"></h5>
+                        <p class="card-text">    
+                            {% if article.author %}  
+                            <span><i style="font-size: 12px">post by @{{ article.author }}</i></span>
+                            {% else %}
+                            <span><i style="font-size: 12px">post by @{{ article.post_by }}</i></span>
+                            {% endif %}
+                            <i style="float:right; font-size: 12px">added {{ article.time_added|timesince }} ago</i>
+                        </p>
+                        {% if article.url  %}
+                            <a href="{{ article.url }}" target="_blank" class="btn btn-outline-primary btn-sm">Read more</a>
+                        {% endif %}
+                  </div>
+                </div>
+            </div>
+        {% endfor %}
+        <br>
 
-{% if jobs_page.has_other_pages %}
-<nav aria-label="...">
-    <ul class="pagination">
+            {% if jobs_page.has_other_pages %}
+            <nav aria-label="...">
+                <ul class="pagination">
 
-        {% if jobs_page.has_previous %}
-      <li class="page-item">
-        <a class="page-link" href="?page={{ jobs_page.previous_page_number }}&q={{ q|urlencode }}" aria-label="{{ jobs_page.previous_page_number }}" data-page="{{ jobs_page.previous_page_number }}">&#10094;Previous</a>
-      </li>
+                    {% if jobs_page.has_previous %}
+                  <li class="page-item">
+                    <a class="page-link" href="?page={{ jobs_page.previous_page_number }}&q={{ q|urlencode }}" aria-label="{{ jobs_page.previous_page_number }}" data-page="{{ jobs_page.previous_page_number }}">&#10094;Previous</a>
+                  </li>
+                    {% endif %}
+                    {% for page in custom_range %}
+                    {% if page == news_page.number %}
+                    <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ page }}&q={{ q|urlencode }}" data-page="{{ page }}">{{ page }}</a></li>
+                      {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page }}&q={{ q|urlencode }}" data-page="{{ page }}">{{ page }}</a></li>
+                      {% endif %}  
+                    {% endfor %}      
+                    {% if news_page.has_next %}
+                  <li class="page-item"><a class="page-link" href="?page={{ jobs_page.next_page_number }}&q={{ q|urlencode }}" data-page="{{ jobs_page.next_page_number }}">Next &#10095;</a></li>
+                    {% endif %}
+                </ul>
+              </nav>
+            {% endif %}
+
         {% endif %}
-        {% for page in custom_range %}
-        {% if page == news_page.number %}
-        <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ page }}&q={{ q|urlencode }}" data-page="{{ page }}">{{ page }}</a></li>
-          {% else %}
-        <li class="page-item"><a class="page-link" href="?page={{ page }}&q={{ q|urlencode }}" data-page="{{ page }}">{{ page }}</a></li>
-          {% endif %}  
-        {% endfor %}      
-        {% if news_page.has_next %}
-      <li class="page-item"><a class="page-link" href="?page={{ jobs_page.next_page_number }}&q={{ q|urlencode }}" data-page="{{ jobs_page.next_page_number }}">Next &#10095;</a></li>
-        {% endif %}
-    </ul>
-  </nav>
-{% endif %}
 
 
-{% else %}
-    <h1>Hey.. you forgot to search for a job</h1>
-{% endif %}
-
+    </div>
+  </div>
+</div>
 
 {% endblock %}

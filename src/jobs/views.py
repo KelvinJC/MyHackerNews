@@ -15,7 +15,7 @@ def jobs_list_view(request):
     ''' Display the news articles by page beginning from the latest.'''
 
     job_query = JobArticle.objects.all().order_by('-api_time') # The '-' in front of time makes it descending order
-    paginator = Paginator(job_query, 5) # Show 5 news articles per page.
+    paginator = Paginator(job_query, 12) # Show 12 news articles per page.
 
     page_number = request.GET.get('page')
     jobs_page = paginator.get_page(page_number)
@@ -98,11 +98,11 @@ def search_jobs_view(request):
     if q:
         news_query = JobArticle.objects.distinct().filter(
             Q(title__icontains=q) | 
-            Q(author__icontains=q) | 
+            Q(author__username__icontains=q) | 
             Q(url__icontains=q)
             ).order_by('time_added')
 
-        paginator = Paginator(news_query, 5)
+        paginator = Paginator(news_query, 12)
         page_number = request.GET.get('page', 1)
         jobs_page = paginator.get_page(page_number)
         

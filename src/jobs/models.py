@@ -4,6 +4,7 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 # Create your models here.
+
 class JobArticle(models.Model):
     api_id        = models.IntegerField(unique=True)
     api_time      = models.IntegerField()

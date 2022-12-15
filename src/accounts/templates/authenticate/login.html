@@ -1,22 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Login</h1>
 <br><br>
+<div class="row justify-content-center">
+
+  <div class="col-md-4">
+    <div class="card shadow">
+      <div class="card-header"><strong>Login</strong></div>
+      <div class="card-body">
         <form action="" method=POST>
-            {% csrf_token %}
+          {% csrf_token %}
+          <div class="row">
             <form>
-                <div class="mb-3">
-                  <label for="InputUsername" class="form-label">Username</label>
-                  <input type="text" class="form-control" name="username" aria-describedby="usernameHelp">
-                </div>
-                <div class="mb-3">
-                  <label for="InputPassword1" class="form-label">Password</label>
-                  <input type="password" class="form-control" name="password">
-                </div>
-                <button type="submit" class="btn btn-secondary">Submit</button>
-              </form>                    
-        </form>
+              <div class="mb-3">
+                <label for="InputUsername" class="form-label">Username</label>
+                <input type="text" class="form-control" name="username" aria-describedby="usernameHelp">
+              </div>
+              <div class="mb-3">
+                <label for="InputPassword1" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password">
+                <button type="submit" class="btn btn-sm btn-primary form-control mt-3" style="height: 38px;">Submit</button>
+              </div>
+              <!-- over 2 million customers -->
+            </form>
+          </div>
+                    
+      </form>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 <br><br><br>
 
 {% endblock %}
