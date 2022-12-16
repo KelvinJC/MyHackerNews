@@ -81,10 +81,10 @@ This project makes use of a PostgreSQL database. You can install a postgres loca
 
 Put all database credentials in the .env file created earlier
 
-DATABASE_NAME=your_database_name
-DATABASE_USER=your_database_user
-DATABASE_PASSWORD=your_database_password
-DATABASE_HOST=your_database_host
+DATABASE_NAME=your_database_name <br>
+DATABASE_USER=your_database_user <br>
+DATABASE_PASSWORD=your_database_password <br>
+DATABASE_HOST=your_database_host <br>
 DATABASE_PORT=your_database_port_number
 
 Make sure you are in the src/ directory
