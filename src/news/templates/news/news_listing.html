@@ -14,7 +14,7 @@
     <div class="row">
     {% for article in news_page %}        {# Each "article" is a NewsArticle model object. #}
       <div class="col-md-6 mb-3">
-        <div class="card">
+        <div class="card" style="background-color: black; color: white ;">
               <!-- Card header -->
               <div class="card-header d-flex align-items-center" style="height: 65px; font-size: 14px">
                   <b>{{ article.title }}</b>
@@ -50,12 +50,13 @@
     {% endfor %}
         <!-- Pagination-->
         {% if news_page.has_other_pages %}
-        <nav aria-label="...">
+        <div>
+          <nav aria-label="...">
             <ul class="pagination">
               <!-- Previous button -->
                 {% if news_page.has_previous %}
               <li class="page-item">
-                <a class="page-link" href="?page={{ news_page.previous_page_number }}" aria-label="{{ news_page.previous_page_number }}">&#10094;Previous</a>
+                <a class="page-link" style= "background-color: #212529;" href="?page={{ news_page.previous_page_number }}" aria-label="{{ news_page.previous_page_number }}">&#10094;Previous</a>
               </li>
                 {% endif %}
                 <!-- Page numbers -->
@@ -63,15 +64,17 @@
                 {% if page == news_page.number %}
                 <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
                   {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ page }}">{{page }}</a></li>
+                <li class="page-item"><a class="page-link" style= "background-color: #212529;" href="?page={{ page }}">{{page }}</a></li>
                   {% endif %}  
                 {% endfor %}  
                 <!-- Next button -->    
                 {% if news_page.has_next %}
-              <li class="page-item"><a class="page-link" href="?page={{ news_page.next_page_number }}">Next &#10095;</a></li>
+              <li class="page-item"><a class="page-link" style= "background-color: #212529;" href="?page={{ news_page.next_page_number }}">Next &#10095;</a></li>
                 {% endif %}
             </ul>
           </nav>
+        </div>
+
         {% endif %}
     </div>
   </div>
