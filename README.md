@@ -72,9 +72,9 @@ cd src
 
 Create a .env file and copy the into it the following:
 
-SECRET_KEY=your secret key (found in the settings.py file)
-DEBUG=1
-ALLOWED_HOST=127.0.0.1 
+SECRET_KEY=your secret key (found in the settings.py file) <br>
+DEBUG=1 <br>
+ALLOWED_HOST=127.0.0.1  
 
 
 ### Database Creation
