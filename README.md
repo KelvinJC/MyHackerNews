@@ -59,18 +59,35 @@ pip install django
 pip install requests
 ```
 
-
-### Database Creation
-
-This project makes use of a sqlite database for storage of articles and job posts as well as user information. If you require a different database, customisation is possible via the settings.py file. <br>
-For the sake of simplicity however, we will focus on using sqlite3. <br><br>
-
+### Credentials management
+It is a good idea to store credentials as environment variables so within the src directory create a .env file and insert your application's credentials.
 
 Change into the source code directory
 
 ```
 cd src 
 ```
+
+Create a .env file and copy the into it the following:
+
+SECRET_KEY=your secret key (found in the settings.py file)
+DEBUG=1
+ALLOWED_HOST=127.0.0.1 
+
+
+### Database Creation
+
+This project makes use of a PostgreSQL database. You can install a postgres locally visit here. 
+
+Put all database credentials in the .env file created earlier
+
+DATABASE_NAME=your_database_name
+DATABASE_USER=your_database_user
+DATABASE_PASSWORD=your_database_password
+DATABASE_HOST=your_database_host
+DATABASE_PORT=your_database_port_number
+
+Make sure you are in the src/ directory
 
 Run the following commands in succession
 
