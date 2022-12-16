@@ -10,6 +10,11 @@ class APIRequest(ABC):
     def fetch_all_job_post_ids():
         pass
 
+    @abstractmethod
+    def fetch_job_posts_with_id():
+        pass
+
+
 class HackerAPIJobsRequest(APIRequest):
     __id_url = "https://hacker-news.firebaseio.com/v0/jobstories.json"
     __each_job_story_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
@@ -70,6 +75,7 @@ class HackerAPIJobsRequest(APIRequest):
         return None
 
 
+class Checker(ABC):
 class TypeIsJobChecker:
     def __init__(self, request: APIRequest): 
         self.request = request
@@ -99,6 +105,36 @@ class KeyFinder:
     def __init__(self, checker: PostHasLinkChecker): 
         self.checker = checker
 
+    @abstractmethod
+    def get_only_job_stories():
+        pass
+
+    @abstractmethod
+    def get_job_posts_with_links():
+        pass
+
+
+class JobPostChecker(Checker):
+    def get_only_job_stories(self):
+        ne = self.request.fetch_job_posts_with_id()
+        if ne:
+            only_news = [i for i in ne if i.get('type') == 'job']
+            return only_news
+        else:
+            return None
+
+    def get_job_posts_with_links(self):
+        nw = self.get_only_job_stories()
+        if nw:
+            only_posts_with_links = [i for i in nw if i.get('url') != '' and i.get('url') != None]
+            return only_posts_with_links
+        return None
+
+
+class KeyFinder:
+    def __init__(self, checker: Checker): 
+        self.checker = checker
+
     def get_job_posts_with_select_keys(self, keys):
         ns = self.checker.get_job_posts_with_links()
         if ns:
@@ -113,6 +149,9 @@ class KeyFinder:
 
    
 request      = HackerAPIJobsRequest()
+post_checker = JobPostChecker(request)
+keyfinder    = KeyFinder(post_checker)
+
 type_checker = TypeIsJobChecker(request)
 link_checker = PostHasLinkChecker(type_checker)
 keyfinder    = KeyFinder(link_checker)

@@ -19,12 +19,41 @@
     <input type="submit" value="Submit" class="btn-btn-secondary">
 </form>
 {% else %}
-<p>
-    <strong>Sorry! You must be logged in to add an article on MyHackerNews</strong><br><br>
-    Log in <a href="{% url 'login' %}">here</a> or <a href="{% url 'signup' %}">Sign up</a>
-    </p>
-    <br>
-    <br>
+
+
+
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <p>
+          <strong>Sorry! You must be logged in to add an article on MyHackerNews</strong><br><br>
+          Log in <a href="{% url 'login' %}">here</a> or <a href="{% url 'signup' %}">Sign up</a>
+        </p>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow">
+          <div class="card-header"><strong>Login</strong></div>
+          <div class="card-body">
+            <form action="" method=POST>
+              {% csrf_token %}
+              <form>
+                  <div class="mb-3">
+                    <label for="InputUsername" class="form-label">Username</label>
+                    <input type="text" class="form-control" name="username" aria-describedby="usernameHelp">
+                  </div>
+                  <div class="mb-3">
+                    <label for="InputPassword1" class="form-label">Password</label>
+                    <input type="password" class="form-control" name="password">
+                  </div>
+                  <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                </form>                    
+          </form>
+          </div>
     
+        </div>
+    
+      </div>
+    
+    </div>
+    <br><br><br>   
 {% endif %}
 {% endblock%}

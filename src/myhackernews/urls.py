@@ -23,6 +23,7 @@ urlpatterns = [
     path('', home_view, name='home'),
 
     path('accounts/', include('accounts.urls')),
+    path('cached_articles/', include('cached_articles.urls')),
     
     path('jobs_list/', jobs_list_view, name='list-jobs'),
     path("jobs_api_request/", jobs_api_request_view, name='api-jobs'),

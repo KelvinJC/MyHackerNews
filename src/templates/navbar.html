@@ -1,3 +1,4 @@
+<!--
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="{% url 'home' %}"><strong>MyHackerNews</strong></a>
@@ -11,10 +12,11 @@
               News
             </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'list-news' %}">Show All News Stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'list-news' %}">All news stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'api-news' %}">Load more news stories</a></li>
             {% if user.is_authenticated %}
-            <li><a class="dropdown-item" href="{% url 'add-news' %}">Add News</a></li>
             <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'add-news' %}">Add News</a></li>
             {%  endif %}
           </ul>
           <li class="nav-item dropdown">
@@ -22,7 +24,8 @@
               Jobs
             </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'list-jobs' %}">Show All Job Stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'list-jobs' %}">All job stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'api-jobs' %}">Load more job stories</a></li>
             {% if user.is_authenticated %}
             <li><a class="dropdown-item" href="{% url 'add-job' %}">Add Job</a></li>
             <li><hr class="dropdown-divider"></li>
@@ -30,11 +33,11 @@
           </ul>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Refresh
+              Cache 
             </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'api-news' %}">Refresh News Stories</a></li>
-            <li><a class="dropdown-item" href="{% url 'api-jobs' %}">Refresh Job Stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'list-cached-news' %}">My news stories</a></li>
+            <li><a class="dropdown-item" href="{% url 'list-cached-jobs' %}">My job stories</a></li>
           </ul>
           {% if user.is_authenticated %}
           <li class="nav-item">
@@ -50,10 +53,89 @@
           {%  endif %}
         </ul>
         <form id="searchForm" class="d-flex" method=GET action="{% url 'search-news' %}">
-          <!--{% csrf_token %} -->
+          {% csrf_token %} 
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ q }}">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
       </div>
     </div>
   </nav>
+-->
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}"><strong>MyHackerNews</strong></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                News
+              </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="{% url 'list-news' %}">All news stories</a></li>
+              <li><a class="dropdown-item" href="{% url 'api-news' %}">Load more news stories</a></li>
+              {% if user.is_authenticated %}
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'add-news' %}">Add News</a></li>
+              {%  endif %}
+            </ul>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Jobs
+              </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="{% url 'list-jobs' %}">All job stories</a></li>
+              <li><a class="dropdown-item" href="{% url 'api-jobs' %}">Load more job stories</a></li>
+              {% if user.is_authenticated %}
+              <li><a class="dropdown-item" href="{% url 'add-job' %}">Add Job</a></li>
+              <li><hr class="dropdown-divider"></li>
+              {%  endif %}
+            </ul>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Cache 
+              </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="{% url 'list-cached-news' %}">My news stories</a></li>
+              <li><a class="dropdown-item" href="{% url 'list-cached-jobs' %}">My job stories</a></li>
+            </ul>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">Log out</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'signup' %}">Sign up</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Login</a>
+            </li>
+            {%  endif %}
+          </ul>
+        </div>
+    </div>
+</nav>
+
+
+  <!-- nav bar vertical
+  <div class="col-md-2">
+    <nav class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link active" href="#">Item 1</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Item 1</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Item 1</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Item 1</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">Item 1</a>
+      </li>
+    </nav>
+  </div>
+   -->

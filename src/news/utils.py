@@ -1,7 +1,8 @@
 import requests
-import ast
+import json
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
+from requests.exceptions import ConnectionError
 
 from .models import NewsArticle
 
@@ -11,24 +12,30 @@ class APIRequest(ABC):
         pass
 
 class HackerAPINewsRequest(APIRequest):
-    id_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
-    each_story_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
+    __id_url         = "https://hacker-news.firebaseio.com/v0/topstories.json"
+    __each_story_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
 
-    def fetch_all_story_ids(self):
-        payload = "{}"
-        response = requests.request("GET", self.id_url, data=payload) # should be wrapped in try catch block against network errors
+    
+    def __request(self, url):
+        try:
+            r = requests.request("GET", url, timeout=120) 
+            r_text = json.loads(r.text)
+        except ConnectionError as e:  
+            print(e)
+        return r_text
         
-        res_text = response.text
-        # reponse.text appears to be a list of integers cast in a string
-        all_ids = (res_text).strip('[').strip(']').split(',')
-        all_ids_int = [int(i) for i in all_ids]
-        return all_ids_int
-
+    def fetch_all_story_ids(self):
+        ids = self.__request(self.__id_url)
+        if ids:
+            ids_int = [int(i) for i in ids]
+            return ids_int
+        return None
+        
     def find_new_ids(self):
         '''
-        Queries db to get all past ids
-        Compares list of past ids with current request
-        Returns all new ids or None
+        Query db to get all past ids
+        Compare list of past ids with current request
+        Return all new ids or None
         '''
         request_ids = self.fetch_all_story_ids()
         print(request_ids)
@@ -40,42 +47,75 @@ class HackerAPINewsRequest(APIRequest):
             return new_ids
         return None
 
-    def fetch_story_with_id(self, ids):
-        ''' Uses the obtained ids to fetch each story from the Get item endpoint.
-            Uses multi-threading to make concurrent HTTP requests to external api'''
-        def get_url(url):
-            return requests.get(url).text
+    def __concurrent_request(self, urls: list):
+        '''
+        Use multi-threading to make concurrent HTTP requests to a list of urls
+        '''     
+        with ThreadPoolExecutor(max_workers=50) as pool:
+            a = list(pool.map(self.__request, urls))  
+        return a
 
+    def fetch_story_with_id(self):
+        ''' 
+        Use the obtained ids to fetch each story from the Get item endpoint.
+        '''
+        ids = self.find_new_ids()
         if ids:
-            list_of_urls = [self.each_story_url.format(i) for i in ids]
-            
-            with ThreadPoolExecutor(max_workers=50) as pool:
-                a = list(pool.map(get_url, list_of_urls))  
-
-            return a
-       
+            list_of_urls = [self.__each_story_url.format(i) for i in ids]
+            response = self.__concurrent_request(list_of_urls)
+            return response
         print('no new stories from fetch fxn')
         return None
 
-class KeyFinder():
+
+class TypeIsStoryChecker:
     def __init__(self, request: APIRequest): 
         self.request = request
+    
+    def get_only_news_stories(self):
+        ne = self.request.fetch_story_with_id()
+        if ne:
+            only_news = [i for i in ne if i.get('type') == 'story']
+            return only_news
+        else:
+            return None
+
+
+class StoryHasLinkChecker:
+    def __init__(self, checker: TypeIsStoryChecker): 
+        self.checker = checker
+
+    def get_news_with_links(self):
+        nw = self.checker.get_only_news_stories()
+        if nw:
+            only_news_with_links = [i for i in nw if i.get('url') != '' and i.get('url') != None]
+            # news_without_links = [x for x in nw if x not in only_news_with_links] # what to do with news posts without links? Make a just-headlines feature?
+            # print('those without', news_without_links)
+            return only_news_with_links
+        return None
+
+
+class KeyFinder:
+    def __init__(self, checker: StoryHasLinkChecker): 
+        self.checker = checker
 
     def get_stories_with_select_keys(self, keys):
-        new_stories = self.request.fetch_story_with_id(self.request.find_new_ids()) 
-        if new_stories:
+        ns = self.checker.get_news_with_links()
+        if ns:
             b = []
-            for i in new_stories:
-                i = ast.literal_eval(i)
+            for i in ns:
                 choice_dict = {k: v for k, v in i.items() if k in keys }
                 b.append(choice_dict)   
             return b
         else:
             print('No new stories')
             return None
+    
+request      = HackerAPINewsRequest()
+type_checker = TypeIsStoryChecker(request)
+link_checker = StoryHasLinkChecker(type_checker)
+keyfinder    = KeyFinder(link_checker)
 
-request = HackerAPINewsRequest()
-keyfinder = KeyFinder(request)
 
 
 
@@ -104,7 +144,7 @@ def get_page_indices(page, paginator):
 
 """
  
-<!-- A little Javascript to help in clickingthrough pages in a search --> 
+<!-- A little Javascript to help in clicking through pages in a search --> 
 
 <script type="text/javascript">
     // Get search form and page links
@@ -155,10 +195,14 @@ def get_page_indices(page, paginator):
                 "type":"story",
                 "url":"https://httptoolkit.tech/blog/cache-your-cors/"
             }'
- 
+
 """
 
 if  __name__ == '__main__':
-    r = HackerAPINewsRequest()
-    a = r.get_stories_with_select_keys()  
-    print(a) 
+
+    choice = ["by", "id", "type", "title", "url", "time"]
+    keys = keyfinder.get_stories_with_select_keys(choice)
+    
+    print(keys) 
+
+

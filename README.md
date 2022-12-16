@@ -59,8 +59,10 @@ pip install django
 pip install requests
 ```
 
+
 ### Credentials management
 It is a good idea to store credentials as environment variables so within the src directory create a .env file and insert your application's credentials.
+
 
 Change into the source code directory
 
@@ -96,6 +98,8 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
+NB.<br>
+To learn how to transfer transfer data from sqlite to postgres, click on this [link.](how_to.md)
 
 ### Create a Django Admin User
 This step is not critical to the usage of the app but if you are familiar with the Django Admin UI you can create a superuser i.e Admin

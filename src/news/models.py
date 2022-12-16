@@ -12,7 +12,7 @@ class NewsArticle(models.Model):
     type          = models.CharField(max_length=100)
     title         = models.CharField(max_length=200)
     url           = models.TextField(blank=True, null=True)
-    time_added      = models.DateTimeField(default=timezone.now)
+    time_added    = models.DateTimeField(auto_now_add=True)
     author        = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
 
     # pub_date  = models.DateField()  convert Unix time to date in hacker request obejct?

@@ -2,3 +2,5 @@ venv/
 *.sqlite3
 __pycache__/
 home_copy_has_img_block.html
+.env
+.env.*
