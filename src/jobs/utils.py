@@ -2,23 +2,20 @@ import requests
 import json
 from concurrent.futures import ThreadPoolExecutor
 from abc import ABC, abstractmethod
-
 from .models import JobArticle
+
 
 class APIRequest(ABC):
     @abstractmethod
     def fetch_all_job_post_ids():
         pass
-
     @abstractmethod
     def fetch_job_posts_with_id():
         pass
 
-
 class HackerAPIJobsRequest(APIRequest):
     __id_url = "https://hacker-news.firebaseio.com/v0/jobstories.json"
     __each_job_story_url = "https://hacker-news.firebaseio.com/v0/item/{}.json"
-
     def __request(self, url):
         try:
             r = requests.request("GET", url, timeout=120) 
@@ -52,7 +49,6 @@ class HackerAPIJobsRequest(APIRequest):
         if new_ids:
             return new_ids
         return None
-
     def __concurrent_request(self, urls: list):
         '''
         Use multi-threading to make concurrent HTTP requests to a list of urls
@@ -60,7 +56,6 @@ class HackerAPIJobsRequest(APIRequest):
         with ThreadPoolExecutor(max_workers=50) as pool:
             a = list(pool.map(self.__request, urls))  
         return a
-
     # Use the obtained ids to fetch each job from the Get item endpoint 
     def fetch_job_posts_with_id(self):
         ''' 
@@ -76,43 +71,15 @@ class HackerAPIJobsRequest(APIRequest):
 
 
 class Checker(ABC):
-class TypeIsJobChecker:
     def __init__(self, request: APIRequest): 
         self.request = request
     
-    def get_only_job_stories(self):
-        ne = self.request.fetch_job_posts_with_id()
-        if ne:
-            only_news = [i for i in ne if i.get('type') == 'job']
-            return only_news
-        else:
-            return None
-
-
-class PostHasLinkChecker:
-    def __init__(self, checker: TypeIsJobChecker): 
-        self.checker = checker
-
-    def get_job_posts_with_links(self):
-        nw = self.checker.get_only_job_stories()
-        if nw:
-            only_posts_with_links = [i for i in nw if i.get('url') != '' and i.get('url') != None]
-            return only_posts_with_links
-        return None
-
-
-class KeyFinder:
-    def __init__(self, checker: PostHasLinkChecker): 
-        self.checker = checker
-
     @abstractmethod
     def get_only_job_stories():
         pass
-
     @abstractmethod
     def get_job_posts_with_links():
         pass
-
 
 class JobPostChecker(Checker):
     def get_only_job_stories(self):
@@ -122,7 +89,6 @@ class JobPostChecker(Checker):
             return only_news
         else:
             return None
-
     def get_job_posts_with_links(self):
         nw = self.get_only_job_stories()
         if nw:
@@ -130,11 +96,9 @@ class JobPostChecker(Checker):
             return only_posts_with_links
         return None
 
-
 class KeyFinder:
     def __init__(self, checker: Checker): 
         self.checker = checker
-
     def get_job_posts_with_select_keys(self, keys):
         ns = self.checker.get_job_posts_with_links()
         if ns:
@@ -146,27 +110,16 @@ class KeyFinder:
         else:
             print('No new job posts')
             return None
-
    
 request      = HackerAPIJobsRequest()
 post_checker = JobPostChecker(request)
 keyfinder    = KeyFinder(post_checker)
-
-type_checker = TypeIsJobChecker(request)
-link_checker = PostHasLinkChecker(type_checker)
-keyfinder    = KeyFinder(link_checker)
-
-
-
-
-
 
 def get_page_indices(page, paginator):
     try:
         leftIndex = (int(page) - 3)
     except TypeError:
         leftIndex = 1
-
     if leftIndex < 1:
         leftIndex = 1
     
@@ -177,17 +130,13 @@ def get_page_indices(page, paginator):
     
     if leftIndex == 1:
         rightIndex = 6   
-
     if rightIndex > paginator.num_pages:
         rightIndex = paginator.num_pages + 1
-
     return leftIndex, rightIndex
 
 
-
 if  __name__ == '__main__':
-
     choice = ["by", "id", "type", "title", "url", "time"]
     keys = keyfinder.get_job_posts_with_select_keys(choice)
     
-    print(keys) 
+    print(keys)
