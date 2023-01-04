@@ -8,8 +8,8 @@ import time
 
 from .models import NewsArticle
 from .forms import NewsCreateForm
-from .utils import keyfinder, get_page_indices
-
+from .utils import get_page_indices
+from api.news import keyfinder
 
 # Create your views here.
 def home_view(request, *args, **kwargs):
