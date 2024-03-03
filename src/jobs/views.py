@@ -6,9 +6,9 @@ import django.db
 
 import time
 from .models import JobArticle
-from .utils import keyfinder, get_page_indices
+from .utils import get_page_indices
 from .forms import JobsCreateForm
-
+from api.jobs import keyfinder
 
 # Create your views here.
 def jobs_list_view(request):
