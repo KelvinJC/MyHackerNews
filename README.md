@@ -1,4 +1,4 @@
-# MyHackerNews
+# NewsFront
 
 ## News Aggregation Web Application
 
