@@ -2,7 +2,7 @@
 
 ## News Aggregation Web Application
 
-MyHackerNews is a simple application that allows users to get up to date on tech-related news articles and tech job posts. Registered users can contibute by adding links to their blogs and online articles.
+NewsFront is a simple application that allows users to get up to date on tech-related news articles and tech job posts. Registered users can contibute by adding links to their blogs and online articles.
 
 
 Within the project, the three apps worthy of note are:
@@ -27,7 +27,7 @@ cd NewsApp
 * Get a copy of the source code of this project into your local repository.
 
 ```
-git clone https://github.com/KelvinJC/MyHackerNews.git
+git clone https://github.com/KelvinJC/newsfront.git
 ```
 
 * The code will be packaged in a directory named MyHackerNews so change into that directory
